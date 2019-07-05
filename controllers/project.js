@@ -76,34 +76,71 @@ var controller = {
             })
         })
     },
-    updateProject:function(req, res){
+    updateProject: function (req, res) {
         var projectId = req.params.id;
         var update = req.body;
 
-        Project.findByIdAndUpdate(projectId, update, {new:true}, (err, projectUpdate) => {
-            if(err) return res.status(500).send({message:"Error al actualizar"});
+        Project.findByIdAndUpdate(projectId, update, {
+            new: true
+        }, (err, projectUpdate) => {
+            if (err) return res.status(500).send({
+                message: "Error al actualizar"
+            });
 
-            if(!projectUpdate) return res.status(404).send({message: "No existe el proyecto"});
+            if (!projectUpdate) return res.status(404).send({
+                message: "No existe el proyecto"
+            });
 
             return res.status(200).send({
-                project : projectUpdate
+                project: projectUpdate
             })
 
         })
     },
-    deleteProject : function(req, res){
+    deleteProject: function (req, res) {
         var projectId = req.params.id;
 
-        Project.findByIdAndRemove(projectId,(err, projectRemoved)=>{
-            if(err) return res.status(500).send({message: "No se ha podido borrar el proyecto"});
+        Project.findByIdAndRemove(projectId, (err, projectRemoved) => {
+            if (err) return res.status(500).send({
+                message: "No se ha podido borrar el proyecto"
+            });
 
-            if(!projectRemoved) return res.status(404).send({message: "No se puede eliminar ese proyecto"});
+            if (!projectRemoved) return res.status(404).send({
+                message: "No se puede eliminar ese proyecto"
+            });
 
             return res.status(200).send({
                 project: projectRemoved
             })
         })
+    },
+    uploadImage: function (req, res) {
+        var projectId = req.params.id;
+        var fileName = "Imagen No subida..."
+
+        if (req.files) {
+            
+            var filePath = req.files.image.path;
+            var fileSplit = filePath.split('\\');
+            var fileName = fileSplit[1];
+
+            Project.findByIdAndUpdate(projectId, {image: fileName}, {new: true}, (err, projectUpdate) => {
+                if (err) return res.status(500).send({message: "El archivo no se ha subido"});
+
+                if (!projectUpdate) return res.status(404).send({message: "El proyecto no existe y no se ha asignado la imagen"});
+
+                return res.status(200).send({
+                    files: projectUpdate
+                })
+            })
+
+        } else {
+            return res.status(200).send({
+                message: fileName
+            })
+        }
     }
+
 
 
 }
