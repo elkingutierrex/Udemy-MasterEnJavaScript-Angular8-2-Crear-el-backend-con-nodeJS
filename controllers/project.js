@@ -27,6 +27,8 @@ var controller = {
         project.year = params.year;
         project.image = null;
 
+        console.log("este es el project " + project)
+
         project.save((err, projectStored) => {
             if (err) return res.status(500).send({
                 message: 'Eroor al guardar el documento'
@@ -37,7 +39,7 @@ var controller = {
             });
 
             return res.status(200).send({
-                project: projectStored + project
+                project: projectStored
             })
 
         })
@@ -147,9 +149,11 @@ var controller = {
                         files: projectUpdate
                     })
                 })
-            }else{
-                fs.unlink(filePath, (err)=>{
-                    return res.status(200).send({message : "La extensión no es válida!"})
+            } else {
+                fs.unlink(filePath, (err) => {
+                    return res.status(200).send({
+                        message: "La extensión no es válida!"
+                    })
                 })
             }
 
@@ -159,20 +163,20 @@ var controller = {
             })
         }
     },
-    getImageFile: function(req, res){
-		var file = req.params.image;
-		var path_file = './uploads/'+file;
+    getImageFile: function (req, res) {
+        var file = req.params.image;
+        var path_file = './uploads/' + file;
 
-		fs.exists(path_file, (exists) => {
-			if(exists){
-				return res.sendFile(path.resolve(path_file));
-			}else{
-				return res.status(200).send({
-					message: "No existe la imagen..."
-				});
-			}
-		});
-	}
+        fs.exists(path_file, (exists) => {
+            if (exists) {
+                return res.sendFile(path.resolve(path_file));
+            } else {
+                return res.status(200).send({
+                    message: "No existe la imagen..."
+                });
+            }
+        });
+    }
 
 
 
